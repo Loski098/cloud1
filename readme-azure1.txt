@@ -6,14 +6,14 @@ This is needed before publishing the app to Azure.
 Ensure ConnectionStrings and Project seetings
 ---------------------------------------------------
 1. Open your user secrets and make sure you have the connection string to your groups Azure SQL Server.
-   E.g, to SQL Server for the group Tanzanite is should look like
-   "SQLServer-zooefc-azure-sysadmin": "Server=tcp:SYS6-Tanzanite-sqlserver-6755B002D1BB .....",
-   "SQLServer-zooefc-azure-gstusr": "Server=tcp:SYS6-Tanzanite-sqlserver-6755B002D1BB ....."
-   "SQLServer-zooefc-azure-usr": "Server=tcp:SYS6-Tanzanite-sqlserver-6755B002D1BB ....."
-   "SQLServer-zooefc-azure-supusr": "Server=tcp:SYS6-Tanzanite-sqlserver-6755B002D1BB ....."
+   E.g, to SQL Server for the group Garnet is should look like
+   "SQLServer-zooefc-azure-sysadmin": "Server=tcp:SYS6-Garnet-sqlserver-6755B002D1BB .....",
+   "SQLServer-zooefc-azure-gstusr": "Server=tcp:SYS6-Garnet-sqlserver-6755B002D1BB ....."
+   "SQLServer-zooefc-azure-usr": "Server=tcp:SYS6-Garnet-sqlserver-6755B002D1BB ....."
+   "SQLServer-zooefc-azure-supusr": "Server=tcp:SYS6-Garnet-sqlserver-6755B002D1BB ....."
 
 2. In Configuration.csproj make sure you have the AzureProjectSettings tag set to 
-    <AzureProjectSettings>/Users/Martin/Development/scripts/azure/az-projects/newton-tanzanite</AzureProjectSettings>
+    <AzureProjectSettings>/Users/Martin/Development/scripts/azure/az-projects/newton-Garnet</AzureProjectSettings>
 
 
 Update Azure KeyVault
@@ -38,7 +38,7 @@ Run AppWebApi locally using local SQL Server and Azure KeyVault
    Verify connections and setup with endpoint Admin/Info. Output should be
    {
       "appEnvironment": "Development",
-      "secretSource": "Azure: Tanzanite",
+      "secretSource": "Azure: Garnet",
       "dataConnectionTag": "zooefc.localhost.docker",
       "defaultDataUser": "sysadmin",
       "migrationDataUser": "sysadmin",
@@ -80,7 +80,7 @@ Run AppWebApi locally using Azure SQL Server and Azure KeyVault
    Verify connections and setup with endpoint Admin/Info. Output should be
    {
       "appEnvironment": "Development",
-      "secretSource": "Azure: Tanzanite",
+      "secretSource": "Azure: Garnet",
       "dataConnectionTag": "zooefc.azure",
       "defaultDataUser": "sysadmin",
       "migrationDataUser": "sysadmin",

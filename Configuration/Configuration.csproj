@@ -8,9 +8,9 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <UserSecretPath>C:\Users\Samir\AppData\Roaming\Microsoft\UserSecrets\</UserSecretPath>
-    <AzureScriptDirectory>C:\Users\Samir\OneDrive\Skrivbord\cloudsec\azuregitbash\azuregitbash</AzureScriptDirectory>
-    <AzureProjectSettings>C:\Users\Samir\OneDrive\Skrivbord\cloudsec\azuregitbash\azuregitbash\az-projects\newton-tanzanite</AzureProjectSettings>
+    <UserSecretPath>C:/Users/Samir/AppData/Roaming/Microsoft/UserSecrets/</UserSecretPath>
+    <AzureScriptDirectory>C:/Users/Samir/OneDrive/Skrivbord/cloudsec/azuregitbash/azuregitbash</AzureScriptDirectory>
+    <AzureProjectSettings>C:/Users/Samir/OneDrive/Skrivbord/cloudsec/azuregitbash/azuregitbash/az-projects/newton-Garnet</AzureProjectSettings>
   </PropertyGroup>
 
   <ItemGroup>

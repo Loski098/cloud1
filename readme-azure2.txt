@@ -41,7 +41,7 @@ warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
 6. Verify connections and setup with endpoint Admin/Info. Output should be
    {
    "appEnvironment": "Production",
-   "secretSource": "Azure: Tanzanite",
+   "secretSource": "Azure: Garnet",
    "dataConnectionTag": "zooefc.azure",
    "defaultDataUser": "sysadmin",
    "migrationDataUser": "sysadmin",
@@ -64,7 +64,7 @@ Launch AppWebApi running on Azure in the browser
 ------------------------------------------------
 
 10. After deployment browse to website. E.g.
-   https://sys6-tanzanite-ws-6755b002d1bb.azurewebsites.net/swagger
+   https://sys6-Garnet-ws-6755b002d1bb.azurewebsites.net/swagger
 
    You can rightclick on the App Service to deployed to and select "Browse Website"
    

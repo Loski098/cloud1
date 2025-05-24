@@ -1,6 +1,6 @@
 #!/bin/bash
 #To make the .sh file executable
-#sudo chmod +x ./publish.sh
+#sudo chmod +x ./az-login.sh
 if [[ -z "$1" ]]; then
     printf "\nMissing parameter.\n Parameter should be directory name of application to publish\n"
     exit 1

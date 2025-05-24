@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DbContext.Migrations.SqlServerDbContext
 {
     [DbContext(typeof(MainDbContext.SqlServerDbContext))]
-    [Migration("20250222184629_miInitial")]
+    [Migration("20250301004508_miInitial")]
     partial class miInitial
     {
         /// <inheritdoc />
@@ -302,28 +302,28 @@ namespace DbContext.Migrations.SqlServerDbContext
 
             modelBuilder.Entity("Models.DTO.GstUsrInfoDbDto", b =>
                 {
-                    b.Property<int>("NrSeededAnimals")
+                    b.Property<int>("NrSeededAdresses")
                         .HasColumnType("int");
 
-                    b.Property<int>("NrSeededCreditCards")
+                    b.Property<int>("NrSeededAttractions")
                         .HasColumnType("int");
 
-                    b.Property<int>("NrSeededEmployees")
+                    b.Property<int>("NrSeededCategories")
                         .HasColumnType("int");
 
-                    b.Property<int>("NrSeededZoos")
+                    b.Property<int>("NrSeededComments")
                         .HasColumnType("int");
 
-                    b.Property<int>("NrUnseededAnimals")
+                    b.Property<int>("NrUnseededAdresses")
                         .HasColumnType("int");
 
-                    b.Property<int>("NrUnseededCreditCards")
+                    b.Property<int>("NrUnseededAttractions")
                         .HasColumnType("int");
 
-                    b.Property<int>("NrUnseededEmployees")
+                    b.Property<int>("NrUnseededCategories")
                         .HasColumnType("int");
 
-                    b.Property<int>("NrUnseededZoos")
+                    b.Property<int>("NrUnseededComments")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")

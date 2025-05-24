@@ -1,32 +1,25 @@
---USE zooefc;
---GO
-
---01-create-schema.sql
---create a schema for guest users, i.e. not logged in
+-- Create schemas
 CREATE SCHEMA gstusr;
 GO
 
---create a schema for logged in user
 CREATE SCHEMA usr;
 GO
 
---02-create-gstusr-view.sql
---create a view that gives overview of the database content
+-- Create Views
 CREATE OR ALTER VIEW gstusr.vwInfoDb AS
     SELECT 'Guest user database overview' as Title,
-    (SELECT COUNT(*) FROM supusr.Zoos WHERE Seeded = 1) as nrSeededZoos, 
-    (SELECT COUNT(*) FROM supusr.Zoos WHERE Seeded = 0) as nrUnseededZoos,
-    (SELECT COUNT(*) FROM supusr.Animals WHERE Seeded = 1) as nrSeededAnimals, 
-    (SELECT COUNT(*) FROM supusr.Animals WHERE Seeded = 0) as nrUnseededAnimals,
-    (SELECT COUNT(*) FROM supusr.Employees WHERE Seeded = 1) as nrSeededEmployees, 
-    (SELECT COUNT(*) FROM supusr.Employees WHERE Seeded = 0) as nrUnseededEmployees,
-    (SELECT COUNT(*) FROM supusr.CreditCards WHERE Seeded = 1) as nrSeededCreditCards, 
-    (SELECT COUNT(*) FROM supusr.CreditCards WHERE Seeded = 0) as nrUnseededCreditCards
-
+    (SELECT COUNT(*) FROM supusr.Attractions WHERE Seeded = 1) as NrSeededAttractions, 
+    (SELECT COUNT(*) FROM supusr.Attractions WHERE Seeded = 0) as NrUnseededAttractions,
+    (SELECT COUNT(*) FROM supusr.Comments WHERE Seeded = 1) as NrSeededComments, 
+    (SELECT COUNT(*) FROM supusr.Comments WHERE Seeded = 0) as NrUnseededComments,
+    (SELECT COUNT(*) FROM supusr.Addresses WHERE Seeded = 1) as NrSeededAdresses, 
+    (SELECT COUNT(*) FROM supusr.Addresses WHERE Seeded = 0) as NrUnseededAdresses,
+    (SELECT COUNT(*) FROM supusr.Categories WHERE Seeded = 1) as NrSeededCategories, 
+    (SELECT COUNT(*) FROM supusr.Categories WHERE Seeded = 0) as NrUnseededCategories;
 GO
 
 CREATE OR ALTER VIEW gstusr.vwInfoZoos AS
-    SELECT z.Country, z.City, COUNT(*) as NrZoos  FROM supusr.Zoos z
+    SELECT z.Country, z.City, COUNT(*) as NrZoos FROM supusr.Zoos z
     GROUP BY z.Country, z.City WITH ROLLUP;
 GO
 
@@ -43,14 +36,11 @@ CREATE OR ALTER VIEW gstusr.vwInfoEmployees AS
     GROUP BY z.Country, z.City, z.Name WITH ROLLUP;
 GO
 
-
-
---03-create-supusr-sp.sql
+-- Stored Procedure to Delete Data
 CREATE OR ALTER PROC supusr.spDeleteAll
     @Seeded BIT = 1
-
-    AS
-
+AS
+BEGIN
     SET NOCOUNT ON;
 
     DELETE FROM supusr.Zoos WHERE Seeded = @Seeded;
@@ -59,76 +49,59 @@ CREATE OR ALTER PROC supusr.spDeleteAll
 
     SELECT * FROM gstusr.vwInfoDb;
 
-    --throw our own error
-    --;THROW 999999, 'my own supusr.spDeleteAll Error directly from SQL Server', 1
-
-    --show return code usage
-    RETURN 0;  --indicating success
-    --RETURN 1;  --indicating your own error code, in this case 1
+    RETURN 0;  -- indicating success
+END;
 GO
 
---04-create-users-azure.sql
---create 3 users we will late set credentials for these
-DROP USER IF EXISTS  gstusrUser;
+-- User Creation (Modified for Azure SQL)
+DROP USER IF EXISTS gstusrUser;
 DROP USER IF EXISTS usrUser;
 DROP USER IF EXISTS supusrUser;
 
-CREATE USER gstusrUser WITH PASSWORD = N'pa$$Word1'; 
-CREATE USER usrUser WITH PASSWORD = N'pa$$Word1'; 
-CREATE USER supusrUser WITH PASSWORD = N'pa$$Word1'; 
-
-ALTER ROLE db_datareader ADD MEMBER gstusrUser; 
-ALTER ROLE db_datareader ADD MEMBER usrUser; 
-ALTER ROLE db_datareader ADD MEMBER supusrUser; 
+CREATE USER gstusrUser WITH PASSWORD = 'pa$$Word1';
+CREATE USER usrUser WITH PASSWORD = 'pa$$Word1';
+CREATE USER supusrUser WITH PASSWORD = 'pa$$Word1';
 GO
 
---05-create-roles-credentials.sql
---create roles
-CREATE ROLE zoosefcGstUsr;
-CREATE ROLE zoosefcUsr;
-CREATE ROLE zoosefcSupUsr;
+-- Create Roles
+CREATE ROLE zooefcGstUsr;
+CREATE ROLE zooefcUsr;
+CREATE ROLE zooefcSupUsr;
 
---assign securables creadentials to the roles
-GRANT SELECT, EXECUTE ON SCHEMA::gstusr to zoosefcGstUsr;
-GRANT SELECT ON SCHEMA::supusr to zoosefcUsr;
-GRANT SELECT, UPDATE, INSERT, DELETE, EXECUTE ON SCHEMA::supusr to zoosefcSupUsr;
+-- Assign Permissions
+GRANT SELECT, EXECUTE ON SCHEMA::gstusr TO zooefcGstUsr;
+GRANT SELECT ON SCHEMA::supusr TO zooefcUsr;
+GRANT SELECT, UPDATE, INSERT, DELETE, EXECUTE ON SCHEMA::supusr TO zooefcSupUsr;
 
---finally, add the users to the roles
-ALTER ROLE zoosefcGstUsr ADD MEMBER gstusrUser;
-
-ALTER ROLE zoosefcGstUsr ADD MEMBER usrUser;
-ALTER ROLE zoosefcUsr ADD MEMBER usrUser;
-
-ALTER ROLE zoosefcGstUsr ADD MEMBER supusrUser;
-ALTER ROLE zoosefcUsr ADD MEMBER supusrUser;
-ALTER ROLE zoosefcSupUsr ADD MEMBER supusrUser;
+-- Assign Users to Roles
+ALTER ROLE zooefcGstUsr ADD MEMBER gstusrUser;
+ALTER ROLE zooefcUsr ADD MEMBER usrUser;
+ALTER ROLE zooefcSupUsr ADD MEMBER supusrUser;
 GO
 
---07-create-gstusr-login.sql
+-- Login Procedure
 CREATE OR ALTER PROC gstusr.spLogin
     @UserNameOrEmail NVARCHAR(100),
     @Password NVARCHAR(200),
-
     @UserId UNIQUEIDENTIFIER OUTPUT,
     @UserName NVARCHAR(100) OUTPUT,
     @Role NVARCHAR(100) OUTPUT
-    
-    AS
-
+AS
+BEGIN
     SET NOCOUNT ON;
-    
+
     SET @UserId = NULL;
     SET @UserName = NULL;
     SET @Role = NULL;
-    
-    SELECT Top 1 @UserId = UserId, @UserName = UserName, @Role = [Role] FROM dbo.Users 
+
+    SELECT TOP 1 @UserId = UserId, @UserName = UserName, @Role = [Role] FROM dbo.Users 
     WHERE ((UserName = @UserNameOrEmail) OR
-           (Email IS NOT NULL AND (Email = @UserNameOrEmail))) AND ([Password] = @Password);
-    
+           (Email IS NOT NULL AND Email = @UserNameOrEmail)) 
+          AND ([Password] = @Password);
+
     IF (@UserId IS NULL)
     BEGIN
-        ;THROW 999999, 'Login error: wrong user or password', 1
+        THROW 999999, 'Login error: wrong user or password', 1;
     END
-
+END;
 GO
-
